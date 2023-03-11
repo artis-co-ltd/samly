@@ -83,6 +83,13 @@ defmodule Samly.RouterUtil do
   end
 
   def send_saml_request(conn, idp_url, use_redirect?, signed_xml_payload, relay_state) do
+    Logger.error("#### RouterUtil#send_saml_request")
+    Logger.error(IO.inspect(get_session(conn)))
+    Logger.error("# idp_url = #{idp_url}")
+    Logger.error("# use_redirect? = #{use_redirect?}")
+    Logger.error("# relay_state = #{relay_state}")
+
+
     if use_redirect? do
       url =
         :esaml_binding.encode_http_redirect(idp_url, signed_xml_payload, :undefined, relay_state)

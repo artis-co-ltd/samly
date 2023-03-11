@@ -86,6 +86,10 @@ defmodule Samly.SPHandler do
 
   # SP-initiated flow auth response
   defp validate_authresp(conn, _assertion, relay_state) do
+    Logger.error("#### SpHandler#validate_authresp")
+    Logger.error(IO.inspect(get_session(conn)))
+
+
     %IdpData{id: idp_id} = conn.private[:samly_idp]
     rs_in_session = get_session(conn, "relay_state")
     idp_id_in_session = get_session(conn, "idp_id")

@@ -54,6 +54,9 @@ defmodule Samly.SPHandler do
       conn = State.put_assertion(conn, assertion_key, assertion)
       target_url = auth_target_url(conn, assertion, relay_state)
 
+      Logger.error("#### SpHandler#consume_signin_response assertion")
+      Logger.error(IO.inspect(assertion))
+
       conn
       |> configure_session(renew: true)
       |> put_session("samly_assertion_key", assertion_key)

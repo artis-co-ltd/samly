@@ -55,6 +55,8 @@ defmodule Samly.SPHandler do
       target_url = auth_target_url(conn, assertion, relay_state)
 
       Logger.error("#### SpHandler#consume_signin_response assertion")
+      ## TODO: nameid でユーザを照合する。
+      Logger.error("# nameid = #{nameid}")
       Logger.error(IO.inspect(assertion))
 
       conn

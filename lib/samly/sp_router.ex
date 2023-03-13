@@ -16,6 +16,8 @@ defmodule Samly.SPRouter do
   end
 
   post "/consume/*idp_id_seg" do
+    Logger.error("#### SpRouter#/consume/*idp_id_seg")
+
     conn |> Samly.SPHandler.consume_signin_response()
   end
 

@@ -1,6 +1,7 @@
 defmodule Samly.SPRouter do
   @moduledoc false
 
+  require Logger
   use Plug.Router
   import Plug.Conn
   import Samly.RouterUtil, only: [check_idp_id: 2]

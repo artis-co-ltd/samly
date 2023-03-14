@@ -186,6 +186,14 @@ defmodule Samly.SPHandler do
 
       {idp_signout_url, resp_xml_frag} = Helper.gen_idp_signout_resp(sp, idp_rec, return_status)
 
+      Logger.error("#### SpHandler#handle_logout_request")
+      Logger.error("## idp_signout_url = #{idp_signout_url}")
+      Logger.error("## resp_xml_flag = #{resp_xml_frag}")
+
+      idp_signout_url = "https://login.microsoftonline.com/eceea09f-439b-4ea3-bd64-3186eda9140e/saml2"
+
+      Logger.error("## idp_signout_url.. = #{idp_signout_url}")
+
       conn
       |> configure_session(drop: true)
       |> send_saml_request(idp_signout_url, idp.use_redirect_for_req, resp_xml_frag, relay_state)

@@ -23,6 +23,10 @@ defmodule Samly.SPRouter do
   end
 
   post "/logout/*idp_id_seg" do
+    Logger.error("#### SpRouter#/logout/*idp_id_seg")
+    Logger.error("# SAMLResponse = #{conn.params["SAMLResponse"]}")
+    Logger.error("# SAMLRequest = #{conn.params["SAMLRequest"]}")
+
     cond do
       conn.params["SAMLResponse"] != nil -> Samly.SPHandler.handle_logout_response(conn)
       conn.params["SAMLRequest"] != nil -> Samly.SPHandler.handle_logout_request(conn)

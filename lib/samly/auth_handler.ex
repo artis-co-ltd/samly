@@ -55,6 +55,8 @@ defmodule Samly.AuthHandler do
   end
 
   def send_signin_req(conn) do
+    Logger.error("#### AuthHandler#send_signin_req")
+
     %IdpData{id: idp_id} = idp = conn.private[:samly_idp]
     %IdpData{esaml_idp_rec: idp_rec, esaml_sp_rec: sp_rec} = idp
     sp = ensure_sp_uris_set(sp_rec, conn)
@@ -64,9 +66,11 @@ defmodule Samly.AuthHandler do
 
     case State.get_assertion(conn, assertion_key) do
       %Assertion{idp_id: ^idp_id} ->
+        Logger.error("# %Assertion{idp_id: ^idp_id} ->")
         conn |> redirect(302, target_url)
 
       _ ->
+        Logger.error("# _ ->")
         relay_state = State.gen_id()
 
         {idp_signin_url, req_xml_frag} =

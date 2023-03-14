@@ -162,6 +162,8 @@ defmodule Samly.SPHandler do
 
   # non-ui logout request from IDP
   def handle_logout_request(conn) do
+    Logger.error("#### SpHandler#handle_logout_request")
+
     %IdpData{id: idp_id} = idp = conn.private[:samly_idp]
     %IdpData{esaml_idp_rec: idp_rec, esaml_sp_rec: sp_rec} = idp
     sp = ensure_sp_uris_set(sp_rec, conn)
@@ -186,7 +188,6 @@ defmodule Samly.SPHandler do
 
       {idp_signout_url, resp_xml_frag} = Helper.gen_idp_signout_resp(sp, idp_rec, return_status)
 
-      Logger.error("#### SpHandler#handle_logout_request")
       Logger.error("## idp_signout_url = #{idp_signout_url}")
 
       idp_signout_url = "https://login.microsoftonline.com/eceea09f-439b-4ea3-bd64-3186eda9140e/saml2"

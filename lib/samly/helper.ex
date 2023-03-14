@@ -94,6 +94,9 @@ defmodule Samly.Helper do
       {'ds', 'http://www.w3.org/2000/09/xmldsig#'}
     ]
 
+    Logger.error("#### Helper#decode_idp_signout_resp")
+    Logger.error("# {:ok, xml_frag} = #{inspect(decode_saml_payload(saml_encoding, saml_response))}")
+
     with {:ok, xml_frag} <- decode_saml_payload(saml_encoding, saml_response),
          nodes when is_list(nodes) and length(nodes) == 1 <-
            :xmerl_xpath.string('/samlp:LogoutResponse', xml_frag, [{:namespace, resp_ns}]) do

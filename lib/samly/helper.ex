@@ -122,6 +122,10 @@ defmodule Samly.Helper do
   end
 
   defp decode_saml_payload(saml_encoding, saml_payload) do
+    Logger.error("#### Helper#decode_saml_payload")
+    Logger.error("# saml_encoding = #{inspect(saml_encoding)}")
+    Logger.error("# saml_payload = #{inspect(saml_payload)}")
+
     try do
       xml = :esaml_binding.decode_response(saml_encoding, saml_payload)
       {:ok, xml}

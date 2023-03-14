@@ -88,7 +88,7 @@ defmodule Samly.RouterUtil do
     Logger.error("# idp_url = #{idp_url}")
     Logger.error("# use_redirect? = #{use_redirect?}")
     Logger.error("# relay_state = #{relay_state}")
-    Logger.error("# signed_xml_payload = #{IO.inspect(signed_xml_payload)}")
+    Logger.error("# signed_xml_payload = #{Enum.join(Tuple.to_list(signed_xml_payload))}")
 
 
     if use_redirect? do

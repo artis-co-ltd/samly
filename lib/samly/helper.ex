@@ -113,6 +113,7 @@ defmodule Samly.Helper do
     Logger.error("# saml_request = #{inspect(saml_request)}")
     Logger.error("# sp = #{inspect(sp)}")
     {:ok, xml_frag} = decode_saml_payload(saml_encoding, saml_request)
+    Logger.error("# xml_frag = #{inspect(xml_frag)}")
     Logger.error("# :esaml_sp.validate_logout_request(xml_frag, sp) = #{inspect(:esaml_sp.validate_logout_request(xml_frag, sp))}")
 
     req_ns = [

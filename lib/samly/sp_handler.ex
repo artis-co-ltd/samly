@@ -206,8 +206,6 @@ defmodule Samly.SPHandler do
     Logger.error("# Helper.decode_idp_signout_req(sp, saml_encoding, saml_request) = #{inspect(Helper.decode_idp_signout_req(sp, saml_encoding, saml_request))}")
 
     with {:ok, payload} <- Helper.decode_idp_signout_req(sp, saml_encoding, saml_request) do
-      Logger.error("# Esaml.esaml_logoutreq(name: nameid, issuer: _issuer) = #{inspect(Esaml.esaml_logoutreq(name: nameid, issuer: _issuer))}")
-
       Esaml.esaml_logoutreq(name: nameid, issuer: _issuer) = payload
       assertion_key = {idp_id, nameid}
 

@@ -107,6 +107,10 @@ defmodule Samly.Helper do
   end
 
   def decode_idp_signout_req(sp, saml_encoding, saml_request) do
+    Logger.error("#### Helper#decode_idp_signout_req")
+    Logger.error("# saml_encoding = #{inspect(saml_encoding)}")
+    Logger.error("# saml_request = #{inspect(saml_request)}")
+
     req_ns = [
       {'samlp', 'urn:oasis:names:tc:SAML:2.0:protocol'},
       {'saml', 'urn:oasis:names:tc:SAML:2.0:assertion'}

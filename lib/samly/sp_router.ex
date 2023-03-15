@@ -28,8 +28,8 @@ defmodule Samly.SPRouter do
     Logger.error("# SAMLRequest = #{conn.params["SAMLRequest"]}")
 
     cond do
-      conn.params["SAMLResponse"] != nil -> Samly.SPHandler.handle_logout_response(conn)
-      conn.params["SAMLRequest"] != nil -> Samly.SPHandler.handle_logout_request(conn)
+      conn.params["SAMLResponse"] != nil -> Samly.SPHandler.get_handle_logout_response(conn)
+      conn.params["SAMLRequest"] != nil -> Samly.SPHandler.get_handle_logout_request(conn)
       true -> conn |> send_resp(403, "invalid_request")
     end
   end

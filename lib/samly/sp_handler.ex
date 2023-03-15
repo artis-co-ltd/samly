@@ -135,7 +135,9 @@ defmodule Samly.SPHandler do
   end
 
   ## GET 用。
-  def handle_logout_response(conn) do
+  def get_handle_logout_response(conn) do
+    Logger.error("#### SpHandler#get_handle_logout_response")
+
     %IdpData{id: idp_id} = idp = conn.private[:samly_idp]
     %IdpData{esaml_idp_rec: _idp_rec, esaml_sp_rec: sp_rec} = idp
     sp = ensure_sp_uris_set(sp_rec, conn)
@@ -162,6 +164,8 @@ defmodule Samly.SPHandler do
   end
 
   def handle_logout_response(conn) do
+    Logger.error("#### SpHandler#handle_logout_response")
+
     %IdpData{id: idp_id} = idp = conn.private[:samly_idp]
     %IdpData{esaml_idp_rec: _idp_rec, esaml_sp_rec: sp_rec} = idp
     sp = ensure_sp_uris_set(sp_rec, conn)
@@ -179,6 +183,63 @@ defmodule Samly.SPHandler do
       |> redirect(302, target_url)
     else
       error -> conn |> send_resp(403, "invalid_request #{inspect(error)}")
+    end
+
+    # rescue
+    #   error ->
+    #     Logger.error("#{inspect error}")
+    #     conn |> send_resp(500, "request_failed")
+  end
+
+  # GET 用
+  def get_handle_logout_request(conn) do
+    Logger.error("#### SpHandler#get_handle_logout_request")
+
+    %IdpData{id: idp_id} = idp = conn.private[:samly_idp]
+    %IdpData{esaml_idp_rec: idp_rec, esaml_sp_rec: sp_rec} = idp
+    sp = ensure_sp_uris_set(sp_rec, conn)
+
+    saml_encoding = conn.body_params["SAMLEncoding"]
+    saml_request = conn.body_params["SAMLRequest"]
+    relay_state = conn.body_params["RelayState"] |> safe_decode_www_form()
+
+    with {:ok, payload} <- Helper.decode_idp_signout_req(sp, saml_encoding, saml_request) do
+      Esaml.esaml_logoutreq(name: nameid, issuer: _issuer) = payload
+      assertion_key = {idp_id, nameid}
+
+      {conn, return_status} =
+        case State.get_assertion(conn, assertion_key) do
+          %Assertion{idp_id: ^idp_id, subject: %Subject{name: ^nameid}} ->
+            conn = State.delete_assertion(conn, assertion_key)
+            {conn, :success}
+
+          _ ->
+            {conn, :denied}
+        end
+
+      {idp_signout_url, resp_xml_frag} = Helper.gen_idp_signout_resp(sp, idp_rec, return_status)
+
+      Logger.error("## idp_signout_url = #{idp_signout_url}")
+
+      idp_signout_url = "https://login.microsoftonline.com/eceea09f-439b-4ea3-bd64-3186eda9140e/saml2"
+
+      Logger.error("## idp_signout_url.. = #{idp_signout_url}")
+
+      conn
+      |> configure_session(drop: true)
+      |> send_saml_request(idp_signout_url, idp.use_redirect_for_req, resp_xml_frag, relay_state)
+    else
+      error ->
+        Logger.error("#{inspect(error)}")
+        {idp_signout_url, resp_xml_frag} = Helper.gen_idp_signout_resp(sp, idp_rec, :denied)
+
+        conn
+        |> send_saml_request(
+          idp_signout_url,
+          idp.use_redirect_for_req,
+          resp_xml_frag,
+          relay_state
+        )
     end
 
     # rescue

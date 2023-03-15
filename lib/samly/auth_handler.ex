@@ -66,6 +66,7 @@ defmodule Samly.AuthHandler do
 
     case State.get_assertion(conn, assertion_key) do
       %Assertion{idp_id: ^idp_id} ->
+        # IdP からサインアウトするとこちらにきてしまう。delete_assertion できていない？
         Logger.error("# %Assertion{idp_id: ^idp_id} ->")
         conn |> redirect(302, target_url)
 

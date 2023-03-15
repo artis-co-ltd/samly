@@ -121,14 +121,14 @@ defmodule Samly.Helper do
       {'saml', 'urn:oasis:names:tc:SAML:2.0:assertion'}
     ]
 
-    with {:ok, xml_frag} <- decode_saml_payload(saml_encoding, saml_request),
-         nodes when is_list(nodes) and length(nodes) == 1 <-
-           :xmerl_xpath.string('/samlp:LogoutRequest', xml_frag, [{:namespace, req_ns}]) do
-            {:ok, xml_frag}
-      # :esaml_sp.validate_logout_request(xml_frag, sp)
-    else
-      _ -> {:error, :invalid_request}
-    end
+    {:ok, xml_frag} = decode_saml_payload(saml_encoding, saml_request)
+    # with {:ok, xml_frag} <- decode_saml_payload(saml_encoding, saml_request),
+    #      nodes when is_list(nodes) and length(nodes) == 1 <-
+    #        :xmerl_xpath.string('/samlp:LogoutRequest', xml_frag, [{:namespace, req_ns}]) do
+    #   :esaml_sp.validate_logout_request(xml_frag, sp)
+    # else
+    #   _ -> {:error, :invalid_request}
+    # end
   end
 
   defp decode_saml_payload(saml_encoding, saml_payload) do

@@ -61,7 +61,7 @@ defmodule Samly.Helper do
     idp_signout_url = Esaml.esaml_idp_metadata(idp_metadata, :logout_location)
 
     Logger.error("#### Helper#gen_idp_signout_req")
-    idp_signout_url = "https://login.microsoftonline.com/eceea09f-439b-4ea3-bd64-3186eda9140e/saml2"
+    # idp_signout_url = "https://login.microsoftonline.com/eceea09f-439b-4ea3-bd64-3186eda9140e/saml2"
 
     xml_frag = :esaml_sp.generate_logout_request(idp_signout_url, session_index, subject_rec, sp)
     {idp_signout_url, xml_frag}
@@ -71,7 +71,7 @@ defmodule Samly.Helper do
     idp_signout_url = Esaml.esaml_idp_metadata(idp_metadata, :logout_location)
 
     Logger.error("#### Helper#gen_idp_signout_resp")
-    idp_signout_url = "https://login.microsoftonline.com/eceea09f-439b-4ea3-bd64-3186eda9140e/saml2"
+    # idp_signout_url = "https://login.microsoftonline.com/eceea09f-439b-4ea3-bd64-3186eda9140e/saml2"
 
     xml_frag = :esaml_sp.generate_logout_response(idp_signout_url, signout_status, sp)
     {idp_signout_url, xml_frag}

@@ -1,7 +1,6 @@
 defmodule Samly.SPRouter do
   @moduledoc false
 
-  require Logger
   use Plug.Router
   import Plug.Conn
   import Samly.RouterUtil, only: [check_idp_id: 2]
@@ -17,28 +16,10 @@ defmodule Samly.SPRouter do
   end
 
   post "/consume/*idp_id_seg" do
-    Logger.error("#### SpRouter#/consume/*idp_id_seg")
-
     conn |> Samly.SPHandler.consume_signin_response()
   end
 
-  get "/logout/*idp_id_seg" do
-    Logger.error("#### SpRouter#get /logout/*idp_id_seg")
-    Logger.error("# SAMLResponse = #{conn.params["SAMLResponse"]}")
-    Logger.error("# SAMLRequest = #{conn.params["SAMLRequest"]}")
-
-    cond do
-      conn.params["SAMLResponse"] != nil -> Samly.SPHandler.get_handle_logout_response(conn)
-      conn.params["SAMLRequest"] != nil -> Samly.SPHandler.get_handle_logout_request(conn)
-      true -> conn |> send_resp(403, "invalid_request")
-    end
-  end
-
   post "/logout/*idp_id_seg" do
-    Logger.error("#### SpRouter#post /logout/*idp_id_seg")
-    Logger.error("# SAMLResponse = #{conn.params["SAMLResponse"]}")
-    Logger.error("# SAMLRequest = #{conn.params["SAMLRequest"]}")
-
     cond do
       conn.params["SAMLResponse"] != nil -> Samly.SPHandler.handle_logout_response(conn)
       conn.params["SAMLRequest"] != nil -> Samly.SPHandler.handle_logout_request(conn)

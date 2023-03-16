@@ -34,12 +34,6 @@ defmodule Samly.SPHandler do
     saml_response = conn.body_params["SAMLResponse"]
     relay_state = conn.body_params["RelayState"] |> safe_decode_www_form()
 
-    Logger.error("#### SpHandler#consume_signin_response")
-    Logger.error("# saml_encoding = #{saml_encoding}")
-    Logger.error("# saml_response = #{saml_response}")
-    Logger.error("# relay_state = #{relay_state}")
-
-
     with {:ok, assertion} <- Helper.decode_idp_auth_resp(sp, saml_encoding, saml_response),
          :ok <- validate_authresp(conn, assertion, relay_state),
          assertion = %Assertion{assertion | idp_id: idp_id},
@@ -53,11 +47,6 @@ defmodule Samly.SPHandler do
       assertion_key = {idp_id, nameid}
       conn = State.put_assertion(conn, assertion_key, assertion)
       target_url = auth_target_url(conn, assertion, relay_state)
-
-      Logger.error("#### SpHandler#consume_signin_response assertion")
-      ## TODO: target_url の controller で nameid でユーザを照合する？？
-      Logger.error("# nameid = #{nameid}")
-      Logger.error(IO.inspect(assertion))
 
       conn
       |> configure_session(renew: true)
@@ -97,10 +86,6 @@ defmodule Samly.SPHandler do
 
   # SP-initiated flow auth response
   defp validate_authresp(conn, _assertion, relay_state) do
-    Logger.error("#### SpHandler#validate_authresp")
-    Logger.error(IO.inspect(get_session(conn)))
-
-
     %IdpData{id: idp_id} = conn.private[:samly_idp]
     rs_in_session = get_session(conn, "relay_state")
     idp_id_in_session = get_session(conn, "idp_id")
@@ -134,38 +119,7 @@ defmodule Samly.SPHandler do
     get_session(conn, "target_url") || "/"
   end
 
-  ## GET 用。
-  def get_handle_logout_response(conn) do
-    Logger.error("#### SpHandler#get_handle_logout_response")
-
-    %IdpData{id: idp_id} = idp = conn.private[:samly_idp]
-    %IdpData{esaml_idp_rec: _idp_rec, esaml_sp_rec: sp_rec} = idp
-    sp = ensure_sp_uris_set(sp_rec, conn)
-
-    saml_encoding = conn.params["SAMLEncoding"]
-    saml_response = conn.params["SAMLResponse"]
-    relay_state = conn.params["RelayState"] |> safe_decode_www_form()
-
-    with {:ok, _payload} <- Helper.decode_idp_signout_resp(sp, saml_encoding, saml_response),
-         ^relay_state when relay_state != nil <- get_session(conn, "relay_state"),
-         ^idp_id <- get_session(conn, "idp_id"),
-         target_url when target_url != nil <- get_session(conn, "target_url") do
-      conn
-      |> configure_session(drop: true)
-      |> redirect(302, target_url)
-    else
-      error -> conn |> send_resp(403, "invalid_request #{inspect(error)}")
-    end
-
-    # rescue
-    #   error ->
-    #     Logger.error("#{inspect error}")
-    #     conn |> send_resp(500, "request_failed")
-  end
-
   def handle_logout_response(conn) do
-    Logger.error("#### SpHandler#handle_logout_response")
-
     %IdpData{id: idp_id} = idp = conn.private[:samly_idp]
     %IdpData{esaml_idp_rec: _idp_rec, esaml_sp_rec: sp_rec} = idp
     sp = ensure_sp_uris_set(sp_rec, conn)
@@ -191,70 +145,8 @@ defmodule Samly.SPHandler do
     #     conn |> send_resp(500, "request_failed")
   end
 
-  # GET 用
-  def get_handle_logout_request(conn) do
-    Logger.error("#### SpHandler#get_handle_logout_request")
-
-    %IdpData{id: idp_id} = idp = conn.private[:samly_idp]
-    %IdpData{esaml_idp_rec: idp_rec, esaml_sp_rec: sp_rec} = idp
-    sp = ensure_sp_uris_set(sp_rec, conn)
-
-    saml_encoding = conn.params["SAMLEncoding"]
-    saml_request = conn.params["SAMLRequest"]
-    relay_state = conn.params["RelayState"] |> safe_decode_www_form()
-
-    Logger.error("# Helper.decode_idp_signout_req(sp, saml_encoding, saml_request) = #{inspect(Helper.decode_idp_signout_req(sp, saml_encoding, saml_request))}")
-
-    with {:ok, payload} <- Helper.decode_idp_signout_req(sp, saml_encoding, saml_request) do
-      Esaml.esaml_logoutreq(name: nameid, issuer: _issuer) = payload
-      assertion_key = {idp_id, nameid}
-
-      {conn, return_status} =
-        case State.get_assertion(conn, assertion_key) do
-          %Assertion{idp_id: ^idp_id, subject: %Subject{name: ^nameid}} ->
-            conn = State.delete_assertion(conn, assertion_key)
-            {conn, :success}
-
-          _ ->
-            {conn, :denied}
-        end
-
-      {idp_signout_url, resp_xml_frag} = Helper.gen_idp_signout_resp(sp, idp_rec, return_status)
-
-      Logger.error("## idp_signout_url = #{idp_signout_url}")
-
-      # idp_signout_url = "https://login.microsoftonline.com/eceea09f-439b-4ea3-bd64-3186eda9140e/saml2"
-      idp_signout_url = "https://artis-sol.onelogin.com/trust/saml2/http-redirect/slo/2102583"
-
-      Logger.error("## idp_signout_url.. = #{idp_signout_url}")
-
-      conn
-      |> configure_session(drop: true)
-      |> send_saml_request(idp_signout_url, idp.use_redirect_for_req, resp_xml_frag, relay_state)
-    else
-      error ->
-        Logger.error("#{inspect(error)}")
-        {idp_signout_url, resp_xml_frag} = Helper.gen_idp_signout_resp(sp, idp_rec, :denied)
-
-        conn
-        |> send_saml_request(
-          idp_signout_url,
-          idp.use_redirect_for_req,
-          resp_xml_frag,
-          relay_state
-        )
-    end
-
-    # rescue
-    #   error ->
-    #     Logger.error("#{inspect error}")
-    #     conn |> send_resp(500, "request_failed")
-  end
-
   # non-ui logout request from IDP
   def handle_logout_request(conn) do
-    Logger.error("#### SpHandler#handle_logout_request")
-
     %IdpData{id: idp_id} = idp = conn.private[:samly_idp]
     %IdpData{esaml_idp_rec: idp_rec, esaml_sp_rec: sp_rec} = idp
     sp = ensure_sp_uris_set(sp_rec, conn)
@@ -278,13 +170,6 @@ defmodule Samly.SPHandler do
         end
 
       {idp_signout_url, resp_xml_frag} = Helper.gen_idp_signout_resp(sp, idp_rec, return_status)
-
-      Logger.error("## idp_signout_url = #{idp_signout_url}")
-
-      # idp_signout_url = "https://login.microsoftonline.com/eceea09f-439b-4ea3-bd64-3186eda9140e/saml2"
-      idp_signout_url = "https://artis-sol.onelogin.com/trust/saml2/http-redirect/slo/2102583"
-
-      Logger.error("## idp_signout_url.. = #{idp_signout_url}")
 
       conn
       |> configure_session(drop: true)

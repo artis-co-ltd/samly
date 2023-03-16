@@ -55,8 +55,6 @@ defmodule Samly.AuthHandler do
   end
 
   def send_signin_req(conn) do
-    Logger.error("#### AuthHandler#send_signin_req")
-
     %IdpData{id: idp_id} = idp = conn.private[:samly_idp]
     %IdpData{esaml_idp_rec: idp_rec, esaml_sp_rec: sp_rec} = idp
     sp = ensure_sp_uris_set(sp_rec, conn)
@@ -66,12 +64,9 @@ defmodule Samly.AuthHandler do
 
     case State.get_assertion(conn, assertion_key) do
       %Assertion{idp_id: ^idp_id} ->
-        # IdP からサインアウトするとこちらにきてしまう。delete_assertion できていない？
-        Logger.error("# %Assertion{idp_id: ^idp_id} ->")
         conn |> redirect(302, target_url)
 
       _ ->
-        Logger.error("# _ ->")
         relay_state = State.gen_id()
 
         {idp_signin_url, req_xml_frag} =
@@ -111,14 +106,6 @@ defmodule Samly.AuthHandler do
 
         {idp_signout_url, req_xml_frag} =
           Helper.gen_idp_signout_req(sp, idp_rec, subject_rec, session_index)
-
-        Logger.error("#### AuthHandler#handle_logout_request")
-        Logger.error("## idp_signout_url = #{idp_signout_url}")
-
-        # idp_signout_url = "https://login.microsoftonline.com/eceea09f-439b-4ea3-bd64-3186eda9140e/saml2"
-        idp_signout_url = "https://artis-sol.onelogin.com/trust/saml2/http-redirect/slo/2102583"
-
-        Logger.error("## idp_signout_url.. = #{idp_signout_url}")
 
         conn = State.delete_assertion(conn, assertion_key)
         relay_state = State.gen_id()

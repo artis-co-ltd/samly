@@ -60,7 +60,7 @@ defmodule Samly.Helper do
 
   def gen_idp_signout_req(sp, idp_metadata, subject_rec, session_index) do
     Logger.error("#### Helper#gen_idp_signout_req")
-    Logger.error("# idp_metadata = #{idp_metadata}")
+    Logger.error("# idp_metadata = #{inspect(idp_metadata)}")
 
 
     idp_signout_url = Esaml.esaml_idp_metadata(idp_metadata, :logout_location)
@@ -70,7 +70,7 @@ defmodule Samly.Helper do
 
   def gen_idp_signout_resp(sp, idp_metadata, signout_status) do
     Logger.error("#### Helper#gen_idp_signout_resp")
-    Logger.error("# idp_metadata = #{idp_metadata}")
+    Logger.error("# idp_metadata = #{inspect(idp_metadata)}")
 
 
     idp_signout_url = Esaml.esaml_idp_metadata(idp_metadata, :logout_location)

@@ -4,6 +4,9 @@ defmodule Samly.Helper do
   require Samly.Esaml
   alias Samly.{Assertion, Esaml, IdpData}
 
+  require Logger
+
+
   @spec get_idp(binary) :: nil | IdpData.t()
   def get_idp(idp_id) do
     idps = Application.get_env(:samly, :identity_providers, %{})
@@ -56,12 +59,20 @@ defmodule Samly.Helper do
   end
 
   def gen_idp_signout_req(sp, idp_metadata, subject_rec, session_index) do
+    Logger.error("#### Helper#gen_idp_signout_req")
+    Logger.error("# idp_metadata = #{idp_metadata}")
+
+
     idp_signout_url = Esaml.esaml_idp_metadata(idp_metadata, :logout_location)
     xml_frag = :esaml_sp.generate_logout_request(idp_signout_url, session_index, subject_rec, sp)
     {idp_signout_url, xml_frag}
   end
 
   def gen_idp_signout_resp(sp, idp_metadata, signout_status) do
+    Logger.error("#### Helper#gen_idp_signout_resp")
+    Logger.error("# idp_metadata = #{idp_metadata}")
+
+
     idp_signout_url = Esaml.esaml_idp_metadata(idp_metadata, :logout_location)
     xml_frag = :esaml_sp.generate_logout_response(idp_signout_url, signout_status, sp)
     {idp_signout_url, xml_frag}

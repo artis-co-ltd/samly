@@ -55,9 +55,15 @@ defmodule Samly.AuthHandler do
   end
 
   def send_signin_req(conn) do
+    Logger.error("#### AuthHandler#send_signin_req")
+
+
     %IdpData{id: idp_id} = idp = conn.private[:samly_idp]
     %IdpData{esaml_idp_rec: idp_rec, esaml_sp_rec: sp_rec} = idp
     sp = ensure_sp_uris_set(sp_rec, conn)
+
+    Logger.error("# idp = #{inspect(idp)}")
+
 
     target_url = conn.private[:samly_target_url] || "/"
     assertion_key = get_session(conn, "samly_assertion_key")
@@ -92,9 +98,15 @@ defmodule Samly.AuthHandler do
   end
 
   def send_signout_req(conn) do
+    Logger.error("#### AuthHandler#send_signout_req")
+
+
     %IdpData{id: idp_id} = idp = conn.private[:samly_idp]
     %IdpData{esaml_idp_rec: idp_rec, esaml_sp_rec: sp_rec} = idp
     sp = ensure_sp_uris_set(sp_rec, conn)
+
+    Logger.error("# idp = #{inspect(idp)}")
+
 
     target_url = conn.private[:samly_target_url] || "/"
     assertion_key = get_session(conn, "samly_assertion_key")

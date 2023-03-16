@@ -51,6 +51,10 @@ defmodule Samly.Helper do
   end
 
   def gen_idp_signin_req(sp, idp_metadata, nameid_format) do
+    Logger.error("#### Helper#gen_idp_signin_req")
+    Logger.error("# idp_metadata = #{inspect(idp_metadata)}")
+
+
     idp_signin_url = Esaml.esaml_idp_metadata(idp_metadata, :login_location)
 
     xml_frag = :esaml_sp.generate_authn_request(idp_signin_url, sp, nameid_format)

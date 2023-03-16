@@ -59,6 +59,10 @@ defmodule Samly.Helper do
 
     xml_frag = :esaml_sp.generate_authn_request(idp_signin_url, sp, nameid_format)
 
+    Logger.error("# idp_signin_url = #{idp_signin_url}")
+    Logger.error("# xml_frag = #{inspect(xml_frag)}")
+
+
     {idp_signin_url, xml_frag}
   end
 
@@ -69,6 +73,11 @@ defmodule Samly.Helper do
 
     idp_signout_url = Esaml.esaml_idp_metadata(idp_metadata, :logout_location)
     xml_frag = :esaml_sp.generate_logout_request(idp_signout_url, session_index, subject_rec, sp)
+
+    Logger.error("# idp_signout_url = #{idp_signout_url}")
+    Logger.error("# xml_frag = #{inspect(xml_frag)}")
+
+
     {idp_signout_url, xml_frag}
   end
 

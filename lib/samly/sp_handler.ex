@@ -224,6 +224,7 @@ defmodule Samly.SPHandler do
       Logger.error("## idp_signout_url = #{idp_signout_url}")
 
       # idp_signout_url = "https://login.microsoftonline.com/eceea09f-439b-4ea3-bd64-3186eda9140e/saml2"
+      idp_signout_url = "https://artis-sol.onelogin.com/trust/saml2/http-redirect/slo/2102583"
 
       Logger.error("## idp_signout_url.. = #{idp_signout_url}")
 
@@ -281,6 +282,7 @@ defmodule Samly.SPHandler do
       Logger.error("## idp_signout_url = #{idp_signout_url}")
 
       # idp_signout_url = "https://login.microsoftonline.com/eceea09f-439b-4ea3-bd64-3186eda9140e/saml2"
+      idp_signout_url = "https://artis-sol.onelogin.com/trust/saml2/http-redirect/slo/2102583"
 
       Logger.error("## idp_signout_url.. = #{idp_signout_url}")
 

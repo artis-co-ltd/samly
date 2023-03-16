@@ -9,6 +9,9 @@ defmodule Samly.RouterUtil do
   @subdomain_re ~r/^(?<subdomain>([^.]+))?\./
 
   def check_idp_id(conn, _opts) do
+    Logger.error("#### RouterUtil#check_idp_id")
+
+
     idp_id_from = Application.get_env(:samly, :idp_id_from)
 
     idp_id =
@@ -25,6 +28,10 @@ defmodule Samly.RouterUtil do
       end
 
     idp = idp_id && Helper.get_idp(idp_id)
+
+    Logger.error("# idp_id = #{inspect(idp_id)}")
+    Logger.error("# idp = #{inspect(idp)}")
+    
 
     if idp do
       conn |> Conn.put_private(:samly_idp, idp)

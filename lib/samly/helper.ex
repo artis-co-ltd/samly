@@ -118,20 +118,24 @@ defmodule Samly.Helper do
   end
 
   def decode_idp_signout_req(sp, saml_encoding, saml_request) do
+    Logger.error("#### Helper#decode_idp_signout_req")
+
+
     req_ns = [
       {'samlp', 'urn:oasis:names:tc:SAML:2.0:protocol'},
       {'saml', 'urn:oasis:names:tc:SAML:2.0:assertion'}
     ]
 
-    {:ok, xml_frag} = decode_saml_payload(saml_encoding, saml_request)
+    Logger.error("# decode_saml_payload(saml_encoding, saml_request) = #{inspect(decode_saml_payload(saml_encoding, saml_request))}")
 
-    # with {:ok, xml_frag} <- decode_saml_payload(saml_encoding, saml_request),
-    #      nodes when is_list(nodes) and length(nodes) == 1 <-
-    #        :xmerl_xpath.string('/samlp:LogoutRequest', xml_frag, [{:namespace, req_ns}]) do
-    #   :esaml_sp.validate_logout_request(xml_frag, sp)
-    # else
-    #   _ -> {:error, :invalid_request}
-    # end
+
+    with {:ok, xml_frag} <- decode_saml_payload(saml_encoding, saml_request),
+         nodes when is_list(nodes) and length(nodes) == 1 <-
+           :xmerl_xpath.string('/samlp:LogoutRequest', xml_frag, [{:namespace, req_ns}]) do
+      :esaml_sp.validate_logout_request(xml_frag, sp)
+    else
+      _ -> {:error, :invalid_request}
+    end
   end
 
   defp decode_saml_payload(saml_encoding, saml_payload) do

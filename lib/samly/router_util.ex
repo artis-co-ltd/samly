@@ -14,6 +14,9 @@ defmodule Samly.RouterUtil do
 
     idp_id_from = Application.get_env(:samly, :idp_id_from)
 
+    Logger.error("# idp_id_from = #{inspect(idp_id_from)}")
+    Logger.error("# conn.params = #{inspect(conn.params)}")
+
     idp_id =
       if idp_id_from == :subdomain do
         case Regex.named_captures(@subdomain_re, conn.host) do
@@ -31,7 +34,7 @@ defmodule Samly.RouterUtil do
 
     Logger.error("# idp_id = #{inspect(idp_id)}")
     Logger.error("# idp = #{inspect(idp)}")
-    
+
 
     if idp do
       conn |> Conn.put_private(:samly_idp, idp)

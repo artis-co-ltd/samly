@@ -6,6 +6,9 @@ defmodule Samly do
   alias Plug.Conn
   alias Samly.{Assertion, State}
 
+  require Logger
+
+
   @doc """
   Returns authenticated user SAML Assertion.
 
@@ -24,6 +27,9 @@ defmodule Samly do
   """
   @spec get_active_assertion(Conn.t()) :: nil | Assertion.t()
   def get_active_assertion(conn) do
+    Logger.error("#### Samly#get_active_assertion")
+    Logger.error("# Conn.get_session(conn, \"samly_assertion_key\") = #{inspect(Conn.get_session(conn, "samly_assertion_key"))}")
+
     case Conn.get_session(conn, "samly_assertion_key") do
       {_idp_id, _nameid} = assertion_key ->
         State.get_assertion(conn, assertion_key)

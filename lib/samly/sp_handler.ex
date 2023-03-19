@@ -131,7 +131,7 @@ defmodule Samly.SPHandler do
     saml_response = conn.params["SAMLResponse"]
     relay_state = conn.params["RelayState"] |> safe_decode_www_form()
 
-    Logger.error("# Helper.decode_idp_signout_resp(sp, saml_encoding, saml_request) = #{inspect(Helper.decode_idp_signout_resp(sp, saml_encoding, saml_request))}")
+    Logger.error("# Helper.decode_idp_signout_resp(sp, saml_encoding, saml_response) = #{inspect(Helper.decode_idp_signout_resp(sp, saml_encoding, saml_response))}")
 
 
     with {:ok, _payload} <- Helper.decode_idp_signout_resp(sp, saml_encoding, saml_response),

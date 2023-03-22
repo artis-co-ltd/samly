@@ -154,6 +154,7 @@ defmodule Samly.SPHandler do
   # non-ui logout request from IDP
   def handle_logout_request(conn) do
     Logger.error("#### SpHandler#handle_logout_request")
+    Logger.error("# conn.remote_ip = #{inspect(conn.remote_ip)}")
 
 
     %IdpData{id: idp_id} = idp = conn.private[:samly_idp]

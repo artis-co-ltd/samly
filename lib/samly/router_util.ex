@@ -119,9 +119,11 @@ defmodule Samly.RouterUtil do
   def redirect(conn, status_code, dest) do
     Logger.error("#### RouterUtil#redirect")
     Logger.error("# dest = #{inspect(dest)}")
-    Logger.error("# dest.replace = #{inspect(String.replace(dest, "%25", "%"))}")
 
     # TODO!!: SAMLResponse の値を URL デコードすればうまくいきそうな気がするが。。
+    dest = String.replace(dest, "%25", "%")
+    Logger.error("# dest.replace = #{inspect(dest)}")
+
     conn
     |> Conn.put_resp_header("location", dest)
     |> Conn.send_resp(status_code, "")

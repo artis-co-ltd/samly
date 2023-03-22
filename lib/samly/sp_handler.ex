@@ -194,7 +194,10 @@ defmodule Samly.SPHandler do
         Logger.error("#{inspect(error)}")
         {idp_signout_url, resp_xml_frag} = Helper.gen_idp_signout_resp(sp, idp_rec, :denied)
 
+        Logger.error("# FOO? ")
+
         conn
+        |> configure_session(drop: true)
         |> send_saml_request(
           idp_signout_url,
           idp.use_redirect_for_req,

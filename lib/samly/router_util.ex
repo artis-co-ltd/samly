@@ -117,6 +117,9 @@ defmodule Samly.RouterUtil do
   end
 
   def redirect(conn, status_code, dest) do
+    Logger.error("#### RouterUtil#redirect")
+    Logger.error("# dest = #{inspect(dest)}")
+
     conn
     |> Conn.put_resp_header("location", dest)
     |> Conn.send_resp(status_code, "")

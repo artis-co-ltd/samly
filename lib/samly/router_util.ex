@@ -121,7 +121,7 @@ defmodule Samly.RouterUtil do
     Logger.error("# dest = #{inspect(dest)}")
 
     conn
-    |> Conn.put_resp_header("location", URI.encode(dest))
+    |> Conn.put_resp_header("location", dest)
     |> Conn.send_resp(status_code, "")
     |> Conn.halt()
   end

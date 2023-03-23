@@ -19,7 +19,7 @@ defmodule Samly.SPRouter do
     conn |> Samly.SPHandler.consume_signin_response()
   end
 
-  post "/logout/*idp_id_seg" do
+  get "/logout/*idp_id_seg" do
     cond do
       conn.params["SAMLResponse"] != nil -> Samly.SPHandler.handle_logout_response(conn)
       conn.params["SAMLRequest"] != nil -> Samly.SPHandler.handle_logout_request(conn)

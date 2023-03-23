@@ -102,7 +102,7 @@ defmodule Samly.Helper do
     with {:ok, xml_frag} <- decode_saml_payload(saml_encoding, saml_request),
          nodes when is_list(nodes) and length(nodes) == 1 <-
            :xmerl_xpath.string('/samlp:LogoutRequest', xml_frag, [{:namespace, req_ns}]) do
-      :esaml_sp.validate_logout_request(xml_frag, sp)
+       :esaml.decode_logout_request(xml_frag)
     else
       _ -> {:error, :invalid_request}
     end

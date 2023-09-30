@@ -21,6 +21,7 @@ defmodule Samly.State.Session do
   alias Samly.Assertion
 
   require Logger
+  use Cozumel.Utils.Debug
 
   @behaviour Samly.State.Store
 
@@ -43,8 +44,8 @@ defmodule Samly.State.Session do
 
   @impl Samly.State.Store
   def put_assertion(conn, assertion_key, assertion, opts) do
-    Logger.error("#### ZZZZ")
-    Logger.error(inspect(conn))
+    Logger.error("#### ZZZFFZ")
+    p inspect(conn)
     %{key: key} = opts
     Logger.error(key)
     Conn.put_session(conn, key, {assertion_key, assertion})

@@ -44,11 +44,13 @@ defmodule Samly.SPHandler do
       computed = updated_assertion.computed
       assertion = %Assertion{assertion | computed: computed, idp_id: idp_id}
 
-      Logger.error("###### FOOOoooBBBB")
+      Logger.error("###### FOOOoooBBBBCCCC")
+      Logger.error(inspect(conn))
 
       nameid = assertion.subject.name
       assertion_key = {idp_id, nameid}
       Logger.error(inspect(State.get_assertion(conn, assertion_key)))
+      Logger.error(Conn.get_session(conn, key))
       conn = State.put_assertion(conn, assertion_key, assertion)
       Logger.error("##### BBBGEEE")
       target_url = auth_target_url(conn, assertion, relay_state)

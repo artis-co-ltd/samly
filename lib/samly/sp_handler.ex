@@ -31,6 +31,8 @@ defmodule Samly.SPHandler do
     %IdpData{pre_session_create_pipeline: pipeline, esaml_sp_rec: sp_rec} = idp
     sp = ensure_sp_uris_set(sp_rec, conn)
 
+    Logger.error(inspect(sp))
+
     saml_encoding = conn.body_params["SAMLEncoding"]
     saml_response = conn.body_params["SAMLResponse"]
     relay_state = conn.body_params["RelayState"] |> safe_decode_www_form()
@@ -44,7 +46,7 @@ defmodule Samly.SPHandler do
       computed = updated_assertion.computed
       assertion = %Assertion{assertion | computed: computed, idp_id: idp_id}
 
-      Logger.error("###### FOOOoooBBBBCCCCFFFZZKK")
+      Logger.error("###### FOOOoooBBBBCCCCFFFZZKKVV")
       # Logger.error(inspect(conn))
 
       nameid = assertion.subject.name

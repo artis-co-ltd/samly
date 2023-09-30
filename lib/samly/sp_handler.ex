@@ -49,8 +49,7 @@ defmodule Samly.SPHandler do
 
       nameid = assertion.subject.name
       assertion_key = {idp_id, nameid}
-      Logger.error(inspect(State.get_assertion(conn, assertion_key)))
-      Logger.error(Conn.get_session(conn, key))
+      Logger.error(inspect(Conn.get_session(conn, "my_samly_state_session_key")))
       conn = State.put_assertion(conn, assertion_key, assertion)
       Logger.error("##### BBBGEEE")
       target_url = auth_target_url(conn, assertion, relay_state)

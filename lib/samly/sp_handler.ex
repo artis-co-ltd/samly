@@ -44,8 +44,8 @@ defmodule Samly.SPHandler do
       computed = updated_assertion.computed
       assertion = %Assertion{assertion | computed: computed, idp_id: idp_id}
 
-      Logger.error("###### FOOOoooBBBBCCCCFFF")
-      Logger.error(inspect(conn))
+      Logger.error("###### FOOOoooBBBBCCCCFFFZZ")
+      # Logger.error(inspect(conn))
 
       nameid = assertion.subject.name
       assertion_key = {idp_id, nameid}

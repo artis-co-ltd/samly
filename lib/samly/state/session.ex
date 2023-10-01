@@ -50,7 +50,9 @@ defmodule Samly.State.Session do
     %{key: key} = opts
     %{state: state} = conn
     Logger.error(key)
+    IO.puts(inspect(conn))
     IO.puts(state)
+    IO.puts(inspect(Conn.get_session(conn, key)))
     Conn.put_session(conn, key, {assertion_key, assertion})
   end
 

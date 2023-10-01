@@ -45,11 +45,12 @@ defmodule Samly.State.Session do
   def put_assertion(conn, assertion_key, assertion, opts) do
     Logger.error("#### ZZZZFFBB")
     # Logger.error("#### INSPECT #{inspect(conn, pretty: true, limit: :infinity)}")
-    Logger.error("#### ZZZZFFCC")
+    Logger.error("#### ZZZZFFCCQQ")
+    IO.puts("##### ELELELE")
     %{key: key} = opts
     %{state: state} = conn
     Logger.error(key)
-    Logger.error(state)
+    IO.puts(state)
     Conn.put_session(conn, key, {assertion_key, assertion})
   end
 

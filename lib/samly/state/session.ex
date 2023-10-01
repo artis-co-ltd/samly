@@ -20,6 +20,8 @@ defmodule Samly.State.Session do
   alias Plug.Conn
   alias Samly.Assertion
 
+  require Logger
+
   @behaviour Samly.State.Store
 
   @session_key "samly_assertion"
@@ -41,7 +43,9 @@ defmodule Samly.State.Session do
 
   @impl Samly.State.Store
   def put_assertion(conn, assertion_key, assertion, opts) do
+    Logger.error("#### put_assertion")
     %{key: key} = opts
+    Logger.error(inspect(key))
     Conn.put_session(conn, key, {assertion_key, assertion})
   end
 

@@ -43,9 +43,12 @@ defmodule Samly.State.Session do
 
   @impl Samly.State.Store
   def put_assertion(conn, assertion_key, assertion, opts) do
-    Logger.error("#### put_assertion")
+    Logger.error("#### put_assertion 1")
     %{key: key} = opts
+    %{state: state} = conn
     Logger.error(inspect(key))
+    Logger.error(inspect(state))
+    Logger.error(inspect(Conn.get_session(conn, key)))
     Conn.put_session(conn, key, {assertion_key, assertion})
   end
 

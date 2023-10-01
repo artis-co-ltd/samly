@@ -20,8 +20,6 @@ defmodule Samly.State.Session do
   alias Plug.Conn
   alias Samly.Assertion
 
-  require Logger
-
   @behaviour Samly.State.Store
 
   @session_key "samly_assertion"
@@ -43,19 +41,7 @@ defmodule Samly.State.Session do
 
   @impl Samly.State.Store
   def put_assertion(conn, assertion_key, assertion, opts) do
-    Logger.error("#### ZZZZFFBB")
-    # Logger.error("#### INSPECT #{inspect(conn, pretty: true, limit: :infinity)}")
-    Logger.error("#### ZZZZFFCCQQ")
-    IO.puts("##### ELELELE")
     %{key: key} = opts
-    %{state: state} = conn
-    Logger.error(key)
-    IO.puts("##### GGGGG")
-    # IO.puts(inspect(conn))
-    IO.puts(state)
-    IO.puts("##### HHHHH")
-    IO.puts(inspect(Conn.get_session(conn, key)))
-    IO.puts("##### IIIII")
     Conn.put_session(conn, key, {assertion_key, assertion})
   end
 

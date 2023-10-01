@@ -26,12 +26,9 @@ defmodule Samly.SPHandler do
   end
 
   def consume_signin_response(conn) do
-    Logger.error("###### AAAAABBB")
     %IdpData{id: idp_id} = idp = conn.private[:samly_idp]
     %IdpData{pre_session_create_pipeline: pipeline, esaml_sp_rec: sp_rec} = idp
     sp = ensure_sp_uris_set(sp_rec, conn)
-
-    Logger.error(inspect(sp))
 
     saml_encoding = conn.body_params["SAMLEncoding"]
     saml_response = conn.body_params["SAMLResponse"]
@@ -46,17 +43,10 @@ defmodule Samly.SPHandler do
       computed = updated_assertion.computed
       assertion = %Assertion{assertion | computed: computed, idp_id: idp_id}
 
-      Logger.error("###### FOOOoooBBBBCCCCFFFZZKKVV")
-      # Logger.error(inspect(conn))
-
       nameid = assertion.subject.name
-      Logger.error("###### AAAA")
       assertion_key = {idp_id, nameid}
-      Logger.error("###### BBBB")
       conn = State.put_assertion(conn, assertion_key, assertion)
-      Logger.error("##### CCCC")
       target_url = auth_target_url(conn, assertion, relay_state)
-      Logger.error("##### DDDD")
 
       conn
       |> configure_session(renew: true)

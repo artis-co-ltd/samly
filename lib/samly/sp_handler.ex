@@ -50,6 +50,8 @@ defmodule Samly.SPHandler do
       conn = State.put_assertion(conn, assertion_key, assertion)
       target_url = auth_target_url(conn, assertion, relay_state)
 
+      Logger.error("assertion = #{inspecct(assertion)}")
+      Logger.error("relay_state = #{inspecct(relay_state)}")
       Logger.error(target_url)
 
       conn

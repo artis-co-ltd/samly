@@ -26,7 +26,7 @@ defmodule Samly.SPHandler do
   end
 
   def consume_signin_response(conn) do
-    Logger.error("#### consume_signin_response aaa")
+    Logger.error("#### consume_signin_response aaa bbb")
 
     %IdpData{id: idp_id} = idp = conn.private[:samly_idp]
     %IdpData{pre_session_create_pipeline: pipeline, esaml_sp_rec: sp_rec} = idp
@@ -60,9 +60,15 @@ defmodule Samly.SPHandler do
       |> put_session("samly_assertion_key", assertion_key)
       |> redirect(302, target_url)
     else
-      {:halted, conn} -> conn
-      {:error, reason} -> conn |> send_resp(403, "access_denied #{inspect(reason)}")
-      _ -> conn |> send_resp(403, "access_denied")
+      {:halted, conn} ->
+        Logger.error("#### halted")
+        conn
+      {:error, reason} ->
+        Logger.error("#### error")
+        conn |> send_resp(403, "access_denied #{inspect(reason)}")
+      _ ->
+        Logger.error("#### other")
+        conn |> send_resp(403, "access_denied")
     end
 
     # rescue

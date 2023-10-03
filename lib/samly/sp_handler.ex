@@ -26,6 +26,8 @@ defmodule Samly.SPHandler do
   end
 
   def consume_signin_response(conn) do
+    Logger.error("#### consume_signin_response")
+
     %IdpData{id: idp_id} = idp = conn.private[:samly_idp]
     %IdpData{pre_session_create_pipeline: pipeline, esaml_sp_rec: sp_rec} = idp
     sp = ensure_sp_uris_set(sp_rec, conn)
@@ -47,6 +49,8 @@ defmodule Samly.SPHandler do
       assertion_key = {idp_id, nameid}
       conn = State.put_assertion(conn, assertion_key, assertion)
       target_url = auth_target_url(conn, assertion, relay_state)
+
+      Logger.error(target_url)
 
       conn
       |> configure_session(renew: true)

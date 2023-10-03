@@ -41,6 +41,7 @@ defmodule Samly.SPHandler do
          assertion = %Assertion{assertion | idp_id: idp_id},
          conn = conn |> put_private(:samly_assertion, assertion),
          {:halted, %Conn{halted: false} = conn} <- {:halted, pipethrough(conn, pipeline)} do
+          Logger.error("## WHY?")
       updated_assertion = conn.private[:samly_assertion]
       computed = updated_assertion.computed
       assertion = %Assertion{assertion | computed: computed, idp_id: idp_id}

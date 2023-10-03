@@ -60,8 +60,6 @@ defmodule Samly.SPHandler do
       |> put_session("samly_assertion_key", assertion_key)
       |> redirect(302, target_url)
     else
-      Logger.error("#### else")
-
       {:halted, conn} -> conn
       {:error, reason} -> conn |> send_resp(403, "access_denied #{inspect(reason)}")
       _ -> conn |> send_resp(403, "access_denied")
